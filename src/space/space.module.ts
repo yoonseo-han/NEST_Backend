@@ -7,7 +7,7 @@ import { Space } from './space.entity'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Space])
+    TypeOrmModule.forFeature([SpaceRepository])
   ],
   controllers: [SpaceController],
   providers: [SpaceService]

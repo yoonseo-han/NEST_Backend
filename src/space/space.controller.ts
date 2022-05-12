@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { SpaceService } from './space.service';
 import { SpaceStatus } from './space-status.enum';
 import { CreateSpaceDTO } from './dto/create-space.dto';
@@ -13,12 +13,12 @@ export class SpaceController {
 
     //Able to use member function in space service
 
-    // @Get('/')
-    // getAllSpace(): Space[] {
-    //     //Handler to receive all space from space service
-    //     //Handler handles the request and sends to controller
-    //     return this.spaceService.getAllSpace();
-    // }
+    @Get('/')
+    getAllSpace(): Promise<Space[]> {
+        //Handler to receive all space from space service
+        //Handler handles the request and sends to controller
+        return this.spaceService.getAllSpace();
+    }
 
     @Post('/')
     //Add handler level pipe: validation pipe for validation
@@ -41,13 +41,20 @@ export class SpaceController {
     //     this.spaceService.deleteSpaceByID(id);
     // }
 
-    // //Update status of space with xspecific id
-    // //custome pipe to check validation of space status
-    // @Patch('/:id/status')
-    // updateSpaceStatus(
-    //     @Param('id') id : string, 
-    //     @Body('status', SpaceStatusValidationPipe) status : SpaceStatus
-    // ) {
-    //     return this.spaceService.updateSpaceStatus(id, status);
-    // }
+    //Delete specific space with id
+    //ParseIntPipe: Ensure that input is in integer datatype
+    @Delete('/:id')
+    deleteSpace(@Param('id', ParseIntPipe) id: number) : Promise<void> {
+        return this.spaceService.deleteSpaceByID(id);
+    }
+
+    //Update status of space with xspecific id
+    //custome pipe to check validation of space status
+    @Patch('/:id/status')
+    updateSpaceStatus(
+        @Param('id', ParseIntPipe) id : number, 
+        @Body('status', SpaceStatusValidationPipe) status : SpaceStatus
+    ) {
+        return this.spaceService.updateSpaceStatus(id, status);
+    }
 }

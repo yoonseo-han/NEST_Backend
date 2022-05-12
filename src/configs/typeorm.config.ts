@@ -7,6 +7,6 @@ export const typeORMConfig: TypeOrmModuleOptions = {
     username: 'root',
     password: 'Yooncer$00',
     database: 'CLASSUM',
-    entities: [__dirname + '/../**/*.entity.{js.ts}'],
+    entities: [__dirname + '/../**/*.entity.{js,ts}'],
     synchronize: true,
 }

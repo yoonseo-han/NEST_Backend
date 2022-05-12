@@ -1,5 +1,5 @@
 import { ArgumentMetadata, BadRequestException, PipeTransform } from "@nestjs/common";
-import { SpaceStatus } from "../space.model";
+import { SpaceStatus } from "../space-status.enum";
 
 //Custom pipe defined to validate input status 
 export class SpaceStatusValidationPipe implements PipeTransform {

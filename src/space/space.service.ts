@@ -16,23 +16,16 @@ export class SpaceService {
         private spaceRepository: SpaceRepository,
     ) {}
 
-    // getAllSpace(): Space[] {
-    //     return this.spaces; //Retun all info stored in space
-    // }
+    //Get all space
+    async getAllSpace() : Promise<Space[]>{
+        //Return all space stored in DB
+        return this.spaceRepository.find();
+    }
 
     //Create space for service
-    async createSpace(createSpaceDTO:CreateSpaceDTO) : Promise<Space>{
-        const {title, description} = createSpaceDTO;
-        //ADd new space to database
-        const space = this.spaceRepository.create({
-            title,
-            description,
-            status: SpaceStatus.PUBLIC
-        })
-        //Save the newly created space to db
-        await this.spaceRepository.save(space);
-        //Return info related to created space
-        return space;
+    createSpace(createSpaceDTO:CreateSpaceDTO) : Promise<Space>{
+        //Use method from repository that deals with data from DB
+        return this.spaceRepository.createSpace(createSpaceDTO);
     }
 
 
@@ -59,10 +52,31 @@ export class SpaceService {
     //     this.spaces = this.spaces.filter((space) => space.id!==found.id);
     // }
 
+    //Delete specific space based on input id
+    async deleteSpaceByID(id: number) : Promise<void> {
+        //Delete is prefered over remove as it does not check if input id does exist (just return null if no space exist)
+        const result = await this.spaceRepository.delete(id);
+
+        //No database with following id
+        if(result.affected === 0 ) {
+            throw new NotFoundException(`Cant find space with id ${id}`);
+        }
+    }
+
     // //Update specific space's status
     // updateSpaceStatus(id: string, status: SpaceStatus) : Space {
     //     const space = this.getSpaceByID(id);
     //     space.status = status;
     //     return space;
     // }
+
+    //Update specific space's status
+    async updateSpaceStatus(id: number, status: SpaceStatus) : Promise<Space> {
+        const space = await this.getSpaceByID(id);
+
+        space.status = status;
+        await this.spaceRepository.save(space);
+
+        return space;
+    }
 }
