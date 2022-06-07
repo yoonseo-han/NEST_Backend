@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/auth/user.entity";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { SpaceStatus } from "./space-status.enum";
 
 //Create entity that transforms to table of db
@@ -15,4 +16,7 @@ export class Space extends BaseEntity {
 
     @Column()
     status: SpaceStatus;
+
+    @ManyToOne(type => User, user=> user.spaces, {eager: false})
+    user: User;
 }

@@ -28,7 +28,7 @@ export class AuthService {
 
         if(user && (await bycrypt.compare(password, user.password))) {
             //When success in login, generate jwt token based on secret+payload
-            const payload = {username: username} //payload generated based on username
+            const payload = {username: username}; //payload generated based on username
             const accessToken = await this.jwtService.sign(payload);
 
             return {accessToken: accessToken};

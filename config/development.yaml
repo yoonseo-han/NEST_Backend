@@ -1,0 +1,8 @@
+db:
+  host: 'localhost'
+  usernmae: 'root'
+  password: 'Yooncer$00'
+  synchronize: true
+
+jwt:
+  secret: 'ClassumBackend'

@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SpaceRepository } from './space.repository';
 import { Space } from './space.entity';
 import { Repository } from 'typeorm';
+import {User} from 'src/auth/user.entity'
 
 @Injectable()
 export class SpaceService {
@@ -17,15 +18,24 @@ export class SpaceService {
     ) {}
 
     //Get all space
-    async getAllSpace() : Promise<Space[]>{
+    async getAllSpace(
+        user: User
+    ) : Promise<Space[]>{
+        const query = this.spaceRepository.createQueryBuilder('space');
+
+        //Based on query API, only find space that matches the user ID provided from param
+        query.where('space.userId = :userId', {userId: user.id});
+
+        const space = await query.getMany();
+
         //Return all space stored in DB
-        return this.spaceRepository.find();
+        return space;
     }
 
     //Create space for service
-    createSpace(createSpaceDTO:CreateSpaceDTO) : Promise<Space>{
+    createSpace(createSpaceDTO:CreateSpaceDTO, user:User) : Promise<Space>{
         //Use method from repository that deals with data from DB
-        return this.spaceRepository.createSpace(createSpaceDTO);
+        return this.spaceRepository.createSpace(createSpaceDTO, user);
     }
 
 
@@ -53,9 +63,10 @@ export class SpaceService {
     // }
 
     //Delete specific space based on input id
-    async deleteSpaceByID(id: number) : Promise<void> {
+    async deleteSpaceByID(id: number, user: User) : Promise<void> {
         //Delete is prefered over remove as it does not check if input id does exist (just return null if no space exist)
-        const result = await this.spaceRepository.delete(id);
+        //Able to delete only if it is the user who created the space
+        const result = await this.spaceRepository.delete({id, user});
 
         //No database with following id
         if(result.affected === 0 ) {
