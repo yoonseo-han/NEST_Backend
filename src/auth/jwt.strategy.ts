@@ -3,7 +3,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { UserRepository } from "./user.repository";
-import {User} from './user.entity'
+import {User} from './user.entity';
+import * as config from 'config';
 
 //To use following jwt strategy anywhere via its dependency injection system
 @Injectable()
@@ -16,7 +17,7 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
         //2 important components(options)
         super({
             //If token is appropriate : For checking
-            secretOrKey: 'ClassumBackend',
+            secretOrKey: process.env.JWT_SECRET|| config.get('jwt.secret'),
             //Following configures the strategy to look for the token : in the form of bearer token
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
         })
